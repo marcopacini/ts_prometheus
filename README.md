@@ -1,4 +1,4 @@
-# deno-prometheus
+# ts-prometheus
 
 A prometheus client for Deno that supports counter, gauge and histrogram metric
 types.
