@@ -36,7 +36,8 @@ export class Histogram extends Metric implements Observe {
     expose(): string {
         let text = ''
         for (let i = 0; i < this.buckets.length; i++) {
-            const labels = this.getLabelsAsString()
+            let labels = this.getLabelsAsString()
+            labels = labels.slice(0, -1) + `,le="${this.buckets[i]}"}`
             text += `${this.collector.name}_bucket${labels} ${this.values[i]}\n`
         }
         text += `${this.collector.name}_sum ${this.sum}\n`
