@@ -12,6 +12,7 @@ export class Histogram extends Metric implements Observe {
         const collector = new Collector(config.name, config.help, 'histogram');
         const labels = config.labels || [];
         const buckets = config.buckets || [];
+        buckets.push(Infinity)
         return new Histogram(collector, labels, buckets);
     }
 
@@ -38,6 +39,7 @@ export class Histogram extends Metric implements Observe {
         for (let i = 0; i < this.buckets.length; i++) {
             let labels = this.getLabelsAsString()
             labels = labels.slice(0, -1) + `,le="${this.buckets[i]}"}`
+            labels = labels.replace('Infinity', '+Inf')
             text += `${this.collector.name}_bucket${labels} ${this.values[i]}\n`
         }
         text += `${this.collector.name}_sum ${this.sum}\n`
