@@ -1,7 +1,6 @@
 import { Collector } from './collector.ts';
 import { Inc, Metric } from './metric.ts';
 
-
 export class Counter extends Metric {
     private collector: Collector;
     private value: number;

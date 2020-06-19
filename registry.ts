@@ -1,4 +1,4 @@
-import { Collector } from './collector.ts'
+import { Collector } from './collector.ts';
 
 export class Registry {
     // The default CollectorRegistry
@@ -7,7 +7,7 @@ export class Registry {
     private collectors: Map<string, Collector>;
     
     constructor() {
-        this.collectors = new Map()
+        this.collectors = new Map();
     }
 
     register(collector: Collector) {
@@ -19,23 +19,24 @@ export class Registry {
     }
 
     unregister(collector: Collector) {
-        this.collectors.delete(collector.name)
+        this.collectors.delete(collector.name);
     }
 
     clear() {
-        this.collectors = new Map()
+        this.collectors = new Map();
     }
 
     metrics(): string {
-        let text = ''
+        let text = '';
         for (let [name, collector] of this.collectors) {
-            text += `# HELP ${collector.name} ${collector.help}\n`
-            text += `# TYPE ${collector.name} ${collector.type}\n`
+            text += `# HELP ${collector.name} ${collector.help}\n`;
+            text += `# TYPE ${collector.name} ${collector.type}\n`;
             for (let metric of collector.collect()) {
-               text += metric.expose() + '\n'
+               text += metric.expose() + '\n';
             }
-            text += '\n'
+            text += '\n';
         }
-        return text
+        text = text.slice(0, -1); // remove last new line
+        return text;
     }
 }

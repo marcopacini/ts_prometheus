@@ -19,20 +19,20 @@ export abstract class Metric {
     }
 
     getLabelsAsString(): string {
-        let labels = ''
+        let labels = '';
         for (let i = 0; i < this.labelNames.length; i++) {
             if (this.labelValues[i]) {
-                labels += `${this.labelNames[i]}="${this.labelValues[i]}"`
+                labels += `${this.labelNames[i]}="${this.labelValues[i]}",`;
             }
         }
         if (labels !== '') {
-            labels = `{${labels}}`
+            labels = `{${labels.slice(0, -1)}}`;
         }
-        return `${labels}`
+        return labels;
     }
 
-    abstract get description(): string
-    abstract expose(): string
+    abstract get description(): string;
+    abstract expose(): string;
 }
 
 function isValidLabelName(label: string) {
