@@ -14,7 +14,7 @@ jobs:
         uses: denolib/setup-deno@master
 
       - name: Deno format
-        uses: deno fmt --check
+        run: deno fmt --check
 
       - name: Run Deno linter
         run: deno lint --unstable
