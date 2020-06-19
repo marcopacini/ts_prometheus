@@ -13,9 +13,9 @@ the text-based exposition for all metrcics collected.
 
 ```ts
 const counter = Counter.with({
-    name: 'http_requests_total', // name
-    help: 'The total number of HTTP requests.', // help
-    labels: [ 'method', 'status' ], // labels
+    name: 'http_requests_total',
+    help: 'The total number of HTTP requests.',
+    labels: [ 'method', 'status' ],
 })
 
 const totalGetCreate = counter.labels({
@@ -86,6 +86,7 @@ http_requests_duration_bucket{route="/",le="0.2"} 0
 http_requests_duration_bucket{route="/",le="0.5"} 1
 http_requests_duration_bucket{route="/",le="1"} 2
 http_requests_duration_bucket{route="/",le="3"} 2
+http_requests_duration_bucket{route="/",le="+Inf"} 2
 http_requests_duration_sum 1
 http_requests_duration_count 2
 ```
