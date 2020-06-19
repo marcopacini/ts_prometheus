@@ -1,19 +1,21 @@
 name: CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     
     steps:
-      # Checkout
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      # Run Linter
-      - name: Lint Code Base
-        uses: docker://github/super-linter:v2.1.0
+      - name: Install Deno
+        uses: denolib/setup-deno@master
+
+      - name: Deno format
+        uses: deno fmt --check
+
+      - name: Run Deno linter
+        run: deno lint --unstable
+    
