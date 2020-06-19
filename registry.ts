@@ -1,42 +1,44 @@
-import { Collector } from './collector.ts';
+import { Collector } from "./collector.ts";
 
 export class Registry {
-    // The default CollectorRegistry
-    static default = new Registry();
+  // The default CollectorRegistry
+  static default = new Registry();
 
-    private collectors: Map<string, Collector>;
-    
-    constructor() {
-        this.collectors = new Map();
-    }
+  private collectors: Map<string, Collector>;
 
-    register(collector: Collector) {
-       const found = this.collectors.has(collector.name);
-       if (found) {
-           throw new Error(`a collector with name ${collector.name} has been registered`);
-       }
-       this.collectors.set(collector.name, collector);
-    }
+  constructor() {
+    this.collectors = new Map();
+  }
 
-    unregister(collector: Collector) {
-        this.collectors.delete(collector.name);
+  register(collector: Collector) {
+    const found = this.collectors.has(collector.name);
+    if (found) {
+      throw new Error(
+        `a collector with name ${collector.name} has been registered`,
+      );
     }
+    this.collectors.set(collector.name, collector);
+  }
 
-    clear() {
-        this.collectors = new Map();
-    }
+  unregister(collector: Collector) {
+    this.collectors.delete(collector.name);
+  }
 
-    metrics(): string {
-        let text = '';
-        for (let [name, collector] of this.collectors) {
-            text += `# HELP ${collector.name} ${collector.help}\n`;
-            text += `# TYPE ${collector.name} ${collector.type}\n`;
-            for (let metric of collector.collect()) {
-               text += metric.expose() + '\n';
-            }
-            text += '\n';
-        }
-        text = text.slice(0, -1); // remove last new line
-        return text;
+  clear() {
+    this.collectors = new Map();
+  }
+
+  metrics(): string {
+    let text = "";
+    for (let [name, collector] of this.collectors) {
+      text += `# HELP ${collector.name} ${collector.help}\n`;
+      text += `# TYPE ${collector.name} ${collector.type}\n`;
+      for (let metric of collector.collect()) {
+        text += metric.expose() + "\n";
+      }
+      text += "\n";
     }
+    text = text.slice(0, -1); // remove last new line
+    return text;
+  }
 }
