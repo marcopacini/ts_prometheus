@@ -13,7 +13,7 @@ jobs:
       - name: Install Deno
         uses: denolib/setup-deno@master
         with:
-          deno-version: v1.1
+          deno-version: v1.1.1
             
 
       - name: Deno format
