@@ -57,3 +57,7 @@ export interface Set {
 export interface Observe {
   observe(n: number): void;
 }
+
+export interface Value {
+  value(): number;
+}
