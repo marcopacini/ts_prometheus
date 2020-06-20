@@ -45,11 +45,11 @@ export class Collector {
   }
 }
 
-function isValidMetricName(name: string): boolean {
+export function isValidMetricName(name: string): boolean {
   return /^[a-zA-Z_:][a-zA-Z0-9_:]*$/.test(name);
 }
 
-function escapeHelpString(help: string): string {
+export function escapeHelpString(help: string): string {
   return help
     .replace(/\\/g, "\\\\") // backslash
     .replace(/\n/g, "\\\n"); // new line

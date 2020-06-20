@@ -19,3 +19,5 @@ jobs:
       - name: Run Deno linter
         run: deno lint --unstable
     
+      - name: Unit tests
+        run: deno test
