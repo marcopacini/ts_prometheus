@@ -36,7 +36,7 @@ export abstract class Metric {
   abstract expose(): string;
 }
 
-function isValidLabelName(label: string) {
+export function isValidLabelName(label: string) {
   return /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(label);
 }
 

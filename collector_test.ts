@@ -21,12 +21,12 @@ test({
     assertEquals(collector.type, "type");
     assertEquals(collector.collect(), []);
 
-    const metric = new MetricMock("some labels");
+    const metric = new MetricMock(["some", "labels"], ["some", "values"]);
 
     assertEquals(collector.getOrSetMetric(metric), metric);
     assertEquals(collector.collect(), [metric]);
 
-    const other = new MetricMock("other labels");
+    const other = new MetricMock(["other", "labels"], ["other", "values"]);
 
     assertEquals(collector.getOrSetMetric(other), other);
     assertEquals(collector.getOrSetMetric(metric), metric);
