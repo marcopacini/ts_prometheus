@@ -12,12 +12,15 @@ jobs:
 
       - name: Install Deno
         uses: denolib/setup-deno@master
-
+        with:
+          deno-version: v1.1.1
+            
       - name: Deno format
-        uses: deno fmt --check
+        run: deno fmt --check
 
       - name: Run Deno linter
         run: deno lint --unstable
     
       - name: Unit tests
         run: deno test
+
