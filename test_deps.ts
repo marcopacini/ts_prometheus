@@ -1,16 +1,16 @@
-import { Metric } from './metric.ts'
+import { Metric } from "./metric.ts";
 
 export const test = Deno.test;
 
 export {
   assert,
-  assertEquals
+  assertEquals,
 } from "https://deno.land/std@0.58.0/testing/asserts.ts";
 
 export class MetricMock extends Metric {
   constructor(private labels: string) {
-      super();
-      this.labels = labels;
+    super();
+    this.labels = labels;
   }
 
   get description(): string {

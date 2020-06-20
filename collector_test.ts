@@ -1,15 +1,14 @@
-
-import { 
-  assert, 
-  assertEquals, 
-  test, 
-  MetricMock 
+import {
+  assert,
+  assertEquals,
+  test,
+  MetricMock,
 } from "./test_deps.ts";
 
-import { 
-  isValidMetricName, 
-  escapeHelpString, 
-  Collector 
+import {
+  isValidMetricName,
+  escapeHelpString,
+  Collector,
 } from "./collector.ts";
 
 test({
@@ -25,15 +24,15 @@ test({
     const metric = new MetricMock("some labels");
 
     assertEquals(collector.getOrSetMetric(metric), metric);
-    assertEquals(collector.collect(), [ metric ]);
+    assertEquals(collector.collect(), [metric]);
 
     const other = new MetricMock("other labels");
 
     assertEquals(collector.getOrSetMetric(other), other);
     assertEquals(collector.getOrSetMetric(metric), metric);
-    assertEquals(collector.collect(), [ metric, other ]);
-  }
-})
+    assertEquals(collector.collect(), [metric, other]);
+  },
+});
 
 test({
   name: "isValidMetricName",
@@ -44,7 +43,7 @@ test({
       "valid:metric:name",
       "_valid_metric_name_",
       ":valid:metric:name:",
-      "valid_metric_name_2"
+      "valid_metric_name_2",
     ];
 
     for (const name of validNames) {
@@ -54,22 +53,22 @@ test({
     const invalidNames = [
       "",
       "0_invalid_metric_name",
-      "$@#!"
+      "$@#!",
     ];
 
     for (const name of invalidNames) {
       assert(!isValidMetricName(name));
     }
-  }
-})
+  },
+});
 
 test({
   name: "escapeHelpString",
   fn() {
     const backslash = "\\";
     const newLine = "\n";
-    
+
     assertEquals(escapeHelpString(backslash), "\\\\");
     assertEquals(escapeHelpString(newLine), "\\\n");
-  }
-})
+  },
+});
