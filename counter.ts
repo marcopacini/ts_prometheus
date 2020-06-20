@@ -1,14 +1,14 @@
 import { Collector } from "./collector.ts";
-import { Inc, Labels, Metric } from "./metric.ts";
-export class Counter extends Metric {
+import { Inc, Labels, Metric, Value } from "./metric.ts";
+export class Counter extends Metric implements Inc, Value {
   private collector: Collector;
-  private value: number;
+  private _value: number;
 
   static with(
     config: { name: string; help: string; labels: string[] },
   ): Counter {
     const collector = new Collector(config.name, config.help, "counter");
-    const labels = config.labels || [];
+    const labels = config.labels;
     return new Counter(collector, labels);
   }
 
@@ -18,7 +18,7 @@ export class Counter extends Metric {
   ) {
     super(labels, new Array(labels.length).fill(undefined));
     this.collector = collector;
-    this.value = 0;
+    this._value = 0;
   }
 
   get description(): string {
@@ -27,10 +27,10 @@ export class Counter extends Metric {
   }
 
   expose(): string {
-    return `${this.description} ${this.value}`;
+    return `${this.description} ${this._value}`;
   }
 
-  labels(labels: Labels): Inc {
+  labels(labels: Labels): Inc & Value {
     let child = new Counter(this.collector, this.labelNames);
     for (let key of Object.keys(labels)) {
       const index = child.labelNames.indexOf(key);
@@ -45,6 +45,9 @@ export class Counter extends Metric {
       inc: (n: number = 1) => {
         child.inc(n);
       },
+      value: () => {
+        return child._value;
+      },
     };
   }
 
@@ -52,6 +55,10 @@ export class Counter extends Metric {
     if (n < 0) {
       throw new Error("it is not possible to deacrease a counter");
     }
-    this.value += n;
+    this._value += n;
+  }
+
+  value(): number {
+    return this._value;
   }
 }
