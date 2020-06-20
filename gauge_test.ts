@@ -12,7 +12,6 @@ test({
     const gauge1 = Gauge.with({
       name: "gauge_without_labels",
       help: "help",
-      labels: [],
     });
 
     assertEquals(gauge1.description, "gauge_without_labels");

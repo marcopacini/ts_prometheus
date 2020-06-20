@@ -1,5 +1,6 @@
 import { Collector } from "./collector.ts";
 import { Labels, Metric, Observe } from "./metric.ts";
+import { Registry } from "./registry.ts";
 
 export class Histogram extends Metric implements Observe {
   private collector: Collector;
@@ -9,9 +10,20 @@ export class Histogram extends Metric implements Observe {
   private values: number[];
 
   static with(
-    config: { name: string; help: string; labels: string[]; buckets: number[] },
+    config: {
+      name: string;
+      help: string;
+      labels?: string[];
+      buckets: number[];
+      registry?: Registry[];
+    },
   ): Histogram {
-    const collector = new Collector(config.name, config.help, "histogram");
+    const collector = new Collector(
+      config.name,
+      config.help,
+      "histogram",
+      config.registry,
+    );
     const labels = config.labels || [];
     const buckets = config.buckets || [];
     buckets.push(Infinity);
@@ -29,6 +41,7 @@ export class Histogram extends Metric implements Observe {
     this.count = 0;
     this.sum = 0;
     this.values = new Array(this.buckets.length).fill(0);
+    this.collector.getOrSetMetric(this);
   }
 
   get description(): string {

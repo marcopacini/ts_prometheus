@@ -1,12 +1,25 @@
 import { Collector } from "./collector.ts";
 import { Inc, Dec, Set, Labels, Metric, Value } from "./metric.ts";
+import { Registry } from "./registry.ts";
 
 export class Gauge extends Metric implements Inc, Dec, Value {
   private collector: Collector;
   private _value: number;
 
-  static with(config: { name: string; help: string; labels: string[] }): Gauge {
-    const collector = new Collector(config.name, config.help, "gauge");
+  static with(
+    config: {
+      name: string;
+      help: string;
+      labels?: string[];
+      registry?: Registry[];
+    },
+  ): Gauge {
+    const collector = new Collector(
+      config.name,
+      config.help,
+      "gauge",
+      config.registry,
+    );
     const labels = config.labels || [];
     return new Gauge(collector, labels);
   }

@@ -6,8 +6,14 @@ export class Collector {
   private _help: string;
   private _type: string;
   private metrics: Map<string, Metric>;
+  private registries: Registry[];
 
-  constructor(name: string, help: string, type: string) {
+  constructor(
+    name: string,
+    help: string,
+    type: string,
+    registries?: Registry[],
+  ) {
     if (!isValidMetricName(name)) {
       throw new Error("invalid metric name");
     }
@@ -16,7 +22,8 @@ export class Collector {
     this._help = escapeHelpString(help);
     this._type = type;
     this.metrics = new Map();
-    Registry.default.register(this);
+    this.registries = registries || [Registry.default];
+    this.registries.forEach((registry) => registry.register(this));
   }
 
   get name(): string {

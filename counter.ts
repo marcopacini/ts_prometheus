@@ -1,14 +1,25 @@
 import { Collector } from "./collector.ts";
 import { Inc, Labels, Metric, Value } from "./metric.ts";
+import { Registry } from "./registry.ts";
 export class Counter extends Metric implements Inc, Value {
   private collector: Collector;
   private _value: number;
 
   static with(
-    config: { name: string; help: string; labels: string[] },
+    config: {
+      name: string;
+      help: string;
+      labels?: string[];
+      registry?: Registry[];
+    },
   ): Counter {
-    const collector = new Collector(config.name, config.help, "counter");
-    const labels = config.labels;
+    const collector = new Collector(
+      config.name,
+      config.help,
+      "counter",
+      config.registry,
+    );
+    const labels = config.labels || [];
     return new Counter(collector, labels);
   }
 
@@ -19,6 +30,7 @@ export class Counter extends Metric implements Inc, Value {
     super(labels, new Array(labels.length).fill(undefined));
     this.collector = collector;
     this._value = 0;
+    this.collector.getOrSetMetric(this);
   }
 
   get description(): string {

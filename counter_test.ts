@@ -12,7 +12,6 @@ test({
     const counter1 = Counter.with({
       name: "counter_without_labels",
       help: "help",
-      labels: [],
     });
 
     assertEquals(counter1.description, "counter_without_labels");
