@@ -1,9 +1,9 @@
 import { Collector } from "./collector.ts";
-import { Inc, Dec, Set, Labels, Metric } from "./metric.ts";
+import { Inc, Dec, Set, Labels, Metric, Value } from "./metric.ts";
 
-export class Gauge extends Metric {
+export class Gauge extends Metric implements Inc, Dec, Value {
   private collector: Collector;
-  private value: number;
+  private _value: number;
 
   static with(config: { name: string; help: string; labels: string[] }): Gauge {
     const collector = new Collector(config.name, config.help, "gauge");
@@ -17,7 +17,7 @@ export class Gauge extends Metric {
   ) {
     super(labels, new Array(labels.length).fill(undefined));
     this.collector = collector;
-    this.value = 0;
+    this._value = 0;
   }
 
   get description(): string {
@@ -26,10 +26,10 @@ export class Gauge extends Metric {
   }
 
   expose(): string {
-    return `${this.description} ${this.value}`;
+    return `${this.description} ${this._value}`;
   }
 
-  labels(labels: Labels): Inc & Dec & Set {
+  labels(labels: Labels): Inc & Dec & Set & Value {
     let child = new Gauge(this.collector, this.labelNames);
     for (let key of Object.keys(labels)) {
       const index = child.labelNames.indexOf(key);
@@ -50,6 +50,9 @@ export class Gauge extends Metric {
       set: (n: number) => {
         child.set(n);
       },
+      value: () => {
+        return child._value;
+      },
     };
   }
 
@@ -57,14 +60,18 @@ export class Gauge extends Metric {
     if (n < 0) {
       throw new Error("it is not possible to deacrease a counter");
     }
-    this.value += n;
+    this._value += n;
   }
 
   dec(n: number = 1) {
-    this.value -= n;
+    this._value -= n;
   }
 
   set(n: number) {
-    this.value = n;
+    this._value = n;
+  }
+
+  value() {
+    return this._value;
   }
 }
