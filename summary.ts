@@ -25,12 +25,12 @@ export class Summary extends Metric implements Observe {
       config.registry,
     );
     const labels = config.labels || [];
-    const percentiles = config.percentiles || [ .01, .05, .9, .95, .99 ];
-    percentiles.forEach(v => {
+    const percentiles = config.percentiles || [.01, .05, .9, .95, .99];
+    percentiles.forEach((v) => {
       if (v < 0 || v > 1) {
-        throw new Error(`invalid percentile: ${v} not in [0,1]`)
+        throw new Error(`invalid percentile: ${v} not in [0,1]`);
       }
-    })
+    });
     return new Summary(collector, labels, percentiles);
   }
 
@@ -55,10 +55,10 @@ export class Summary extends Metric implements Observe {
 
   expose(): string {
     let text = "";
-    
+
     for (let p of this.percentiles) {
       let labels = this.getLabelsAsString({ percentile: p.toString() });
-      let index = Math.ceil(p*this.values.length);
+      let index = Math.ceil(p * this.values.length);
       index = index == 0 ? 0 : index - 1;
       let value = this.values[index];
       text += `${this.collector.name}${labels} ${value}\n`;
