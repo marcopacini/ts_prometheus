@@ -31,6 +31,7 @@ export class Gauge extends Metric implements Inc, Dec, Value {
     super(labels, new Array(labels.length).fill(undefined));
     this.collector = collector;
     this._value = 0;
+    this.collector.getOrSetMetric(this);
   }
 
   get description(): string {
