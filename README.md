@@ -1,7 +1,7 @@
 # ts-prometheus
 
-A prometheus client for Deno that supports counter, gauge and histrogram metric
-types.
+A prometheus client for Deno that supports counter, gauge, histrogram and
+summary metric types.
 
 ## Usage
 
@@ -21,6 +21,7 @@ const myCounter = Counter.with({
 
 ## Examples
 
+- [ts-prometheus](https://github.com/marcopacini/ts-prometheus/blob/master/example/example.ts)
 - [oak](https://github.com/marcopacini/ts-prometheus/blob/master/example/oak/main.ts)
 
 ## Metric Types
@@ -32,15 +33,15 @@ const counter = Counter.with({
     name: 'http_requests_total',
     help: 'The total number of HTTP requests.',
     labels: [ 'method', 'status' ],
-})
+});
 
 const totalGetCreate = counter.labels({
     method: 'GET',
     status: '201'
-})
+});
 
-totalGetCreate.inc()
-totalGetCreate.inc(42)
+totalGetCreate.inc();
+totalGetCreate.inc(42);
 ```
 
 ```text
@@ -56,17 +57,17 @@ const gauge = Gauge.with({
     name: 'cpu_time_usage',
     help: 'The CPU time usage.',
     labels: [ 'mode' ],
-})
+});
 
 const cpuIdle = gauge.labels({
     mode: 'idle'
-})
+});
 
-cpuIdle.set(0)
-cpuIdle.inc()
-cpuIdle.inc(42)
-cpuIdle.dec()
-cpuIdle.dec(3.14)
+cpuIdle.set(0);
+cpuIdle.inc();
+cpuIdle.inc(42);
+cpuIdle.dec();
+cpuIdle.dec(3.14);
 ```
 
 ```
@@ -82,10 +83,10 @@ const histogram = Histogram.with({
     name: 'http_requests_duration',
     help: 'A histogram of the requests duration.',
     buckets: [ .05, .1, .2, .5, 1, 3 ],
-})
+});
 
-histogram.observe(.42)
-histogram.observe(.58)
+histogram.observe(.42);
+histogram.observe(.58);
 ```
 
 ```
@@ -100,4 +101,30 @@ http_requests_duration_bucket{le="3"} 2
 http_requests_duration_bucket{le="+Inf"} 2
 http_requests_duration_sum 1
 http_requests_duration_count 2
+```
+
+### Summary
+
+By default percentiles when not set are `[ .01, .05, .9, .95, .99 ]`.
+
+```ts
+let summary = Summary.with({
+  name: "http_response_size",
+  help: "A summary of the response size.",
+  percentiles: [ .25, .5, .75, 1 ]
+});
+
+let values = [ 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 ];
+values.forEach(v => summary.observe(v))
+```
+
+```
+# HELP http_response_size A summary of the response size.
+# TYPE http_response_size summary
+http_response_size{percentile="0.25"} 2
+http_response_size{percentile="0.5"} 5
+http_response_size{percentile="0.75"} 21
+http_response_size{percentile="1"} 55
+http_response_size_sum 143
+http_response_size_count 10
 ```
