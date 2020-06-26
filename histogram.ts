@@ -58,7 +58,7 @@ export class Histogram extends Metric implements Observe {
       text += `${this.collector.name}_bucket${labels} ${this.values[i]}\n`;
     }
     text += `${this.collector.name}_sum ${this.sum}\n`;
-    text += `${this.collector.name}_count ${this.count}\n`;
+    text += `${this.collector.name}_count ${this.count}`;
     return text;
   }
 
