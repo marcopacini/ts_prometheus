@@ -19,17 +19,20 @@ export abstract class Metric {
     this.labelValues = labelValues;
   }
 
-  getLabelsAsString(): string {
-    let labels = "";
+  getLabelsAsString(labels: Labels = {}): string {
+    let labelsAsString = "";
     for (let i = 0; i < this.labelNames.length; i++) {
       if (this.labelValues[i]) {
-        labels += `${this.labelNames[i]}="${this.labelValues[i]}",`;
+        labelsAsString += `${this.labelNames[i]}="${this.labelValues[i]}",`;
       }
     }
-    if (labels !== "") {
-      labels = `{${labels.slice(0, -1)}}`;
+    for (let labelName of Object.keys(labels)) {
+      labelsAsString += `${labelName}="${labels[labelName]}",`;
     }
-    return labels;
+    if (labelsAsString !== "") {
+      labelsAsString = `{${labelsAsString.slice(0, -1)}}`;
+    }
+    return labelsAsString;
   }
 
   abstract get description(): string;
