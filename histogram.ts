@@ -52,8 +52,7 @@ export class Histogram extends Metric implements Observe {
   expose(): string {
     let text = "";
     for (let i = 0; i < this.buckets.length; i++) {
-      let labels = this.getLabelsAsString();
-      labels = labels.slice(0, -1) + `,le="${this.buckets[i]}"}`;
+      let labels = this.getLabelsAsString({ le: `${this.buckets[i]}` });
       labels = labels.replace("Infinity", "+Inf");
       text += `${this.collector.name}_bucket${labels} ${this.values[i]}\n`;
     }
