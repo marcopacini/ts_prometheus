@@ -55,6 +55,7 @@ export class Summary extends Metric implements Observe {
 
   expose(): string {
     let text = "";
+    this.values.sort((a, b) => a - b);
 
     for (let p of this.percentiles) {
       let labels = this.getLabelsAsString({ percentile: p.toString() });
