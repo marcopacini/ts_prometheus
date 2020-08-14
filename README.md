@@ -131,7 +131,7 @@ http_response_size_count 10
 
 A sliding time window can be set using `maxAge` for defining the age of 
 observation in milliseconds, or `ageBuckets` for limiting the max number of 
-observation.
+observations.
 
 ```ts
 Summary.with({
@@ -139,6 +139,6 @@ Summary.with({
   help: "A summary of the response size.",
   percentiles: [ .25, .5, .75, 1 ]
   maxAge: 1000 // milliseconds
-  ageBuckets: 5 // the max number of value
+  ageBuckets: 5 // number of observations
 });
 ```
