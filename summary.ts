@@ -53,7 +53,13 @@ export class Summary extends Metric implements Observe {
         throw new Error(`invalid percentile: ${v} not in [0,1]`);
       }
     });
-    return new Summary(collector, labels, percentiles, config.maxAge, config.ageBuckets);
+    return new Summary(
+      collector,
+      labels,
+      percentiles,
+      config.maxAge,
+      config.ageBuckets,
+    );
   }
 
   private constructor(
@@ -103,7 +109,9 @@ export class Summary extends Metric implements Observe {
     let text = "";
 
     this.clean();
-    const sorted = this.values.slice().sort((a, b) => a.getValue() - b.getValue());
+    const sorted = this.values.slice().sort((a, b) =>
+      a.getValue() - b.getValue()
+    );
 
     for (let p of this.percentiles) {
       let labels = this.getLabelsAsString({ percentile: p.toString() });
@@ -113,7 +121,7 @@ export class Summary extends Metric implements Observe {
       text += `${this.collector.name}${labels} ${value}\n`;
     }
 
-    const sum = this.values.reduce((sum,v) => sum + v.getValue(), 0);
+    const sum = this.values.reduce((sum, v) => sum + v.getValue(), 0);
     text += `${this.collector.name}_sum ${sum}\n`;
     text += `${this.collector.name}_count ${sorted.length}`;
 
@@ -149,11 +157,11 @@ export class Summary extends Metric implements Observe {
 
   getSum(): number {
     this.clean();
-    return this.values.reduce((sum,v) => sum + v.getValue(), 0);
+    return this.values.reduce((sum, v) => sum + v.getValue(), 0);
   }
 
   getValues(): number[] {
     this.clean();
-    return this.values.map(s => s.getValue())
+    return this.values.map((s) => s.getValue());
   }
 }
