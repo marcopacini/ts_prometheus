@@ -2,12 +2,32 @@ import { Collector } from "./collector.ts";
 import { Labels, Metric, Observe } from "./metric.ts";
 import { Registry } from "./registry.ts";
 
+class Sample {
+  private timestamp: number;
+  private value: number;
+
+  constructor(value: number) {
+    this.timestamp = new Date().getTime();
+    this.value = value;
+  }
+
+  getTimestamp(): number {
+    return this.timestamp;
+  }
+
+  getValue(): number {
+    return this.value;
+  }
+}
+
 export class Summary extends Metric implements Observe {
   private collector: Collector;
   private percentiles: number[];
   private count: number;
   private sum: number;
-  private values: number[];
+  private values: Sample[];
+  private maxAge?: number;
+  private ageBuckets?: number;
 
   static with(
     config: {
@@ -15,6 +35,8 @@ export class Summary extends Metric implements Observe {
       help: string;
       labels?: string[];
       percentiles?: number[];
+      maxAge?: number;
+      ageBuckets?: number;
       registry?: Registry[];
     },
   ): Summary {
@@ -31,13 +53,15 @@ export class Summary extends Metric implements Observe {
         throw new Error(`invalid percentile: ${v} not in [0,1]`);
       }
     });
-    return new Summary(collector, labels, percentiles);
+    return new Summary(collector, labels, percentiles, config.maxAge, config.ageBuckets);
   }
 
   private constructor(
     collector: Collector,
     labels: string[],
     percentiles: number[],
+    maxAge?: number,
+    ageBuckets?: number,
   ) {
     super(labels, new Array(labels.length).fill(undefined));
     this.collector = collector;
@@ -45,6 +69,8 @@ export class Summary extends Metric implements Observe {
     this.count = 0;
     this.sum = 0;
     this.values = [];
+    this.maxAge = maxAge;
+    this.ageBuckets = ageBuckets;
     this.collector.getOrSetMetric(this);
   }
 
@@ -53,20 +79,43 @@ export class Summary extends Metric implements Observe {
     return `${this.collector.name}${labels}`;
   }
 
+  private clean() {
+    // Remove older than maxAge
+    if (this.maxAge !== undefined) {
+      const limit = new Date().getTime() - this.maxAge;
+      let i = 0;
+      while (i < this.values.length) {
+        if (this.values[i].getTimestamp() > limit) {
+          break;
+        }
+        i++;
+      }
+      this.values = this.values.slice(i);
+    }
+    // Remove extra values
+    if (this.ageBuckets !== undefined) {
+      const index = this.values.length - this.ageBuckets;
+      this.values = this.values.splice(index);
+    }
+  }
+
   expose(): string {
     let text = "";
-    this.values.sort((a, b) => a - b);
+
+    this.clean();
+    const sorted = this.values.slice().sort((a, b) => a.getValue() - b.getValue());
 
     for (let p of this.percentiles) {
       let labels = this.getLabelsAsString({ percentile: p.toString() });
-      let index = Math.ceil(p * this.values.length);
+      let index = Math.ceil(p * sorted.length);
       index = index == 0 ? 0 : index - 1;
-      let value = this.values[index];
+      let value = sorted[index].getValue();
       text += `${this.collector.name}${labels} ${value}\n`;
     }
 
-    text += `${this.collector.name}_sum ${this.sum}\n`;
-    text += `${this.collector.name}_count ${this.count}`;
+    const sum = this.values.reduce((sum,v) => sum + v.getValue(), 0);
+    text += `${this.collector.name}_sum ${sum}\n`;
+    text += `${this.collector.name}_count ${sorted.length}`;
 
     return text;
   }
@@ -90,8 +139,21 @@ export class Summary extends Metric implements Observe {
   }
 
   observe(n: number) {
-    this.values.push(n);
-    this.sum += n;
-    this.count += 1;
+    this.values.push(new Sample(n));
+  }
+
+  getCount(): number {
+    this.clean();
+    return this.values.length;
+  }
+
+  getSum(): number {
+    this.clean();
+    return this.values.reduce((sum,v) => sum + v.getValue(), 0);
+  }
+
+  getValues(): number[] {
+    this.clean();
+    return this.values.map(s => s.getValue())
   }
 }
