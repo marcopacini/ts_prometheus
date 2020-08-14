@@ -128,3 +128,17 @@ http_response_size{percentile="1"} 55
 http_response_size_sum 143
 http_response_size_count 10
 ```
+
+A sliding time window can be set using `maxAge` for defining the age of 
+observation in milliseconds, or `ageBuckets` for limiting the max number of 
+observation.
+
+```ts
+Summary.with({
+  name: "http_response_size",
+  help: "A summary of the response size.",
+  percentiles: [ .25, .5, .75, 1 ]
+  maxAge: 1000 // milliseconds
+  ageBuckets: 5 // the max number of value
+});
+```
