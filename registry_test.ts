@@ -1,7 +1,4 @@
-import {
-  assertEquals,
-  test,
-} from "./test_deps.ts";
+import { assertEquals, test } from "./test_deps.ts";
 
 import { Registry } from "./registry.ts";
 import { Collector } from "./collector.ts";

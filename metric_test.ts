@@ -2,13 +2,11 @@ import {
   assert,
   assertEquals,
   assertThrows,
-  test,
   MetricMock,
+  test,
 } from "./test_deps.ts";
 
-import {
-  isValidLabelName,
-} from "./metric.ts";
+import { isValidLabelName } from "./metric.ts";
 
 test({
   name: "isValidLabelName",

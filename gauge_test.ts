@@ -1,8 +1,4 @@
-import {
-  assertEquals,
-  assertThrows,
-  test,
-} from "./test_deps.ts";
+import { assertEquals, assertThrows, test } from "./test_deps.ts";
 
 import { Gauge } from "./gauge.ts";
 

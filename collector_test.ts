@@ -1,15 +1,6 @@
-import {
-  assert,
-  assertEquals,
-  test,
-  MetricMock,
-} from "./test_deps.ts";
+import { assert, assertEquals, MetricMock, test } from "./test_deps.ts";
 
-import {
-  isValidMetricName,
-  escapeHelpString,
-  Collector,
-} from "./collector.ts";
+import { Collector, escapeHelpString, isValidMetricName } from "./collector.ts";
 
 test({
   name: "Collector",

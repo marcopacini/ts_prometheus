@@ -7,16 +7,16 @@ summary metric types.
 
 By default all metrics are registered in the global `Registry` accessible via
 `Registry.default`. The `Registry` class has the method `metrics()` that returns
-the text-based exposition for all metrics collected. But it is possible 
+the text-based exposition for all metrics collected. But it is possible
 specified one or more custom registry:
 
 ```ts
 const myRegistry = new Registry();
 const myCounter = Counter.with({
-    name: 'my_counter',
-    help: 'a counter with custom registry',
-    regitry: [ myRegistry ]
-})
+  name: "my_counter",
+  help: "a counter with custom registry",
+  regitry: [myRegistry],
+});
 ```
 
 ## Examples
@@ -30,14 +30,14 @@ const myCounter = Counter.with({
 
 ```ts
 const counter = Counter.with({
-    name: 'http_requests_total',
-    help: 'The total number of HTTP requests.',
-    labels: [ 'method', 'status' ],
+  name: "http_requests_total",
+  help: "The total number of HTTP requests.",
+  labels: ["method", "status"],
 });
 
 const totalGetCreate = counter.labels({
-    method: 'GET',
-    status: '201'
+  method: "GET",
+  status: "201",
 });
 
 totalGetCreate.inc();
@@ -54,13 +54,13 @@ http_requests_total{method="GET",status="201"} 43
 
 ```ts
 const gauge = Gauge.with({
-    name: 'cpu_time_usage',
-    help: 'The CPU time usage.',
-    labels: [ 'mode' ],
+  name: "cpu_time_usage",
+  help: "The CPU time usage.",
+  labels: ["mode"],
 });
 
 const cpuIdle = gauge.labels({
-    mode: 'idle'
+  mode: "idle",
 });
 
 cpuIdle.set(0);
@@ -80,9 +80,9 @@ cpu_time_usage{mode="idle"} 38.86
 
 ```ts
 const histogram = Histogram.with({
-    name: 'http_requests_duration',
-    help: 'A histogram of the requests duration.',
-    buckets: [ .05, .1, .2, .5, 1, 3 ],
+  name: "http_requests_duration",
+  help: "A histogram of the requests duration.",
+  buckets: [.05, .1, .2, .5, 1, 3],
 });
 
 histogram.observe(.42);
@@ -111,11 +111,11 @@ By default percentiles when not set are `[ .01, .05, .9, .95, .99 ]`.
 let summary = Summary.with({
   name: "http_response_size",
   help: "A summary of the response size.",
-  percentiles: [ .25, .5, .75, 1 ]
+  percentiles: [.25, .5, .75, 1],
 });
 
-let values = [ 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 ];
-values.forEach(v => summary.observe(v))
+let values = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
+values.forEach((v) => summary.observe(v));
 ```
 
 ```
@@ -129,8 +129,8 @@ http_response_size_sum 143
 http_response_size_count 10
 ```
 
-A sliding time window can be set using `maxAge` for defining the age of 
-observation in milliseconds, or `ageBuckets` for limiting the max number of 
+A sliding time window can be set using `maxAge` for defining the age of
+observation in milliseconds, or `ageBuckets` for limiting the max number of
 observations.
 
 ```ts
