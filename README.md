@@ -15,7 +15,7 @@ const myRegistry = new Registry();
 const myCounter = Counter.with({
   name: "my_counter",
   help: "a counter with custom registry",
-  regitry: [myRegistry],
+  registry: [myRegistry],
 });
 ```
 
