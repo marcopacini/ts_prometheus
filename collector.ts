@@ -43,7 +43,7 @@ export class Collector {
   }
 
   getOrSetMetric(metric: Metric): Metric {
-    let saved = this.metrics.get(metric.description);
+    const saved = this.metrics.get(metric.description);
     if (saved !== undefined) {
       return saved;
     }

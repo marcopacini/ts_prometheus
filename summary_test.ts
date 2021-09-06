@@ -13,6 +13,8 @@ test({
       help: "help",
     });
 
+    assertEquals(summary.expose(), undefined);
+
     assertThrows(() => {
       Summary.with({
         name: "summary_withouts_labels_and_percentiles",
@@ -33,9 +35,9 @@ test({
 
     assertEquals(summary.expose(), undefined);
 
-    let count = 10;
+    const count = 10;
     let sum = 0;
-    let values = [];
+    const values = [];
 
     for (let i = 0; i < count; i++) {
       sum += i;
@@ -59,9 +61,9 @@ test({
       registry: [new Registry()],
     });
 
-    let count = 3;
+    const count = 3;
     let sum = 0;
-    let values = [1, 2, 3];
+    const values = [1, 2, 3];
 
     for (let i = 0; i < count; i++) {
       summary.observe(i);
@@ -90,9 +92,9 @@ test({
       registry: [new Registry()],
     });
 
-    let count = 10;
+    const count = 10;
     let sum = 0;
-    let values = [7, 8, 9];
+    const values = [7, 8, 9];
 
     for (let i = 0; i < count; i++) {
       sum += i;

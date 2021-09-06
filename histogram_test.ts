@@ -11,6 +11,8 @@ test({
       buckets: [],
     });
 
+    assertEquals(histogram.expose(), undefined);
+
     assertThrows(() => {
       Histogram.with({
         name: "histogram_without_labels_and_buckets",

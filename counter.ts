@@ -34,7 +34,7 @@ export class Counter extends Metric implements Inc, Value {
   }
 
   get description(): string {
-    let labels = this.getLabelsAsString();
+    const labels = this.getLabelsAsString();
     return `${this.collector.name}${labels}`;
   }
 
@@ -47,7 +47,7 @@ export class Counter extends Metric implements Inc, Value {
 
   labels(labels: Labels): Inc & Value {
     let child = new Counter(this.collector, this.labelNames);
-    for (let key of Object.keys(labels)) {
+    for (const key of Object.keys(labels)) {
       const index = child.labelNames.indexOf(key);
       if (index === -1) {
         throw new Error(`label with name ${key} not defined`);
@@ -57,6 +57,7 @@ export class Counter extends Metric implements Inc, Value {
     child = child.collector.getOrSetMetric(child) as Counter;
 
     return {
+      // deno-lint-ignore no-inferrable-types
       inc: (n: number = 1) => {
         child.inc(n);
       },
@@ -65,7 +66,7 @@ export class Counter extends Metric implements Inc, Value {
       },
     };
   }
-
+  // deno-lint-ignore no-inferrable-types
   inc(n: number = 1) {
     if (n < 0) {
       throw new Error("it is not possible to deacrease a counter");

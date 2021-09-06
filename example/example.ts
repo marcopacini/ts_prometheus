@@ -43,13 +43,13 @@ const histogram = Histogram.with({
 histogram.observe(.42);
 histogram.observe(.58);
 
-let summary = Summary.with({
+const summary = Summary.with({
   name: "http_response_size",
   help: "A summary of the response size.",
   percentiles: [.25, .5, .75, 1],
 });
 
-let values = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
+const values = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
 values.forEach((v) => summary.observe(v));
 
 console.log(Registry.default.metrics());

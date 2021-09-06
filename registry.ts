@@ -30,12 +30,12 @@ export class Registry {
 
   metrics(): string {
     let text = "";
-    for (let [_, collector] of this.collectors) {
+    for (const [_, collector] of this.collectors) {
       let collectorText =
         `# HELP ${collector.name} ${collector.help}\n# TYPE ${collector.name} ${collector.type}\n`;
 
       let count = 0;
-      for (let metric of collector.collect()) {
+      for (const metric of collector.collect()) {
         const metricText = metric.expose();
         if (metricText !== undefined) {
           collectorText += metricText + "\n";

@@ -45,7 +45,7 @@ export class Histogram extends Metric implements Observe {
   }
 
   get description(): string {
-    let labels = this.getLabelsAsString();
+    const labels = this.getLabelsAsString();
     return `${this.collector.name}${labels}`;
   }
 
@@ -66,7 +66,7 @@ export class Histogram extends Metric implements Observe {
 
   labels(labels: Labels): Observe {
     let child = new Histogram(this.collector, this.labelNames, this.buckets);
-    for (let key of Object.keys(labels)) {
+    for (const key of Object.keys(labels)) {
       const index = child.labelNames.indexOf(key);
       if (index === -1) {
         throw new Error(`label with name ${key} not defined`);
@@ -83,7 +83,7 @@ export class Histogram extends Metric implements Observe {
   }
 
   observe(n: number) {
-    let index = this.buckets.findIndex((v) => v >= n);
+    const index = this.buckets.findIndex((v) => v >= n);
     for (let i = index; i < this.values.length; i++) {
       this.values[i] += 1;
     }

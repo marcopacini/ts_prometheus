@@ -77,7 +77,7 @@ export class Summary extends Metric implements Observe {
   }
 
   get description(): string {
-    let labels = this.getLabelsAsString();
+    const labels = this.getLabelsAsString();
     return `${this.collector.name}${labels}`;
   }
 
@@ -113,11 +113,11 @@ export class Summary extends Metric implements Observe {
       a.getValue() - b.getValue()
     );
 
-    for (let p of this.percentiles) {
-      let labels = this.getLabelsAsString({ percentile: p.toString() });
+    for (const p of this.percentiles) {
+      const labels = this.getLabelsAsString({ percentile: p.toString() });
       let index = Math.ceil(p * sorted.length);
       index = index == 0 ? 0 : index - 1;
-      let value = sorted[index].getValue();
+      const value = sorted[index].getValue();
       text += `${this.collector.name}${labels} ${value}\n`;
     }
 
@@ -130,7 +130,7 @@ export class Summary extends Metric implements Observe {
 
   labels(labels: Labels): Observe {
     let child = new Summary(this.collector, this.labelNames, this.percentiles);
-    for (let key of Object.keys(labels)) {
+    for (const key of Object.keys(labels)) {
       const index = child.labelNames.indexOf(key);
       if (index === -1) {
         throw new Error(`label with name ${key} not defined`);

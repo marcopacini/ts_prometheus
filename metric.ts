@@ -10,7 +10,7 @@ export abstract class Metric {
     if (labelNames.length !== labelValues.length) {
       throw new Error("invalid number of arguments");
     }
-    for (let label of labelNames) {
+    for (const label of labelNames) {
       if (!isValidLabelName(label)) {
         throw new Error(`invalid label name: ${label}`);
       }
@@ -26,7 +26,7 @@ export abstract class Metric {
         labelsAsString += `${this.labelNames[i]}="${this.labelValues[i]}",`;
       }
     }
-    for (let labelName of Object.keys(labels)) {
+    for (const labelName of Object.keys(labels)) {
       labelsAsString += `${labelName}="${labels[labelName]}",`;
     }
     if (labelsAsString !== "") {
