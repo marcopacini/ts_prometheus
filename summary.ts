@@ -23,8 +23,6 @@ class Sample {
 export class Summary extends Metric implements Observe {
   private collector: Collector;
   private percentiles: number[];
-  private count: number;
-  private sum: number;
   private values: Sample[];
   private maxAge?: number;
   private ageBuckets?: number;
@@ -72,8 +70,6 @@ export class Summary extends Metric implements Observe {
     super(labels, new Array(labels.length).fill(undefined));
     this.collector = collector;
     this.percentiles = percentiles.sort((a, b) => a < b ? -1 : 1);
-    this.count = 0;
-    this.sum = 0;
     this.values = [];
     this.maxAge = maxAge;
     this.ageBuckets = ageBuckets;
@@ -105,7 +101,11 @@ export class Summary extends Metric implements Observe {
     }
   }
 
-  expose(): string {
+  expose(): string | undefined {
+    if (this.values.length === 0) {
+      return undefined;
+    }
+
     let text = "";
 
     this.clean();

@@ -36,13 +36,12 @@ export abstract class Metric {
   }
 
   abstract get description(): string;
-  abstract expose(): string;
+  abstract expose(): string | undefined;
 }
 
 export function isValidLabelName(label: string) {
   return /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(label);
 }
-
 export interface Inc {
   inc(): void;
   inc(n: number): void;
@@ -62,5 +61,5 @@ export interface Observe {
 }
 
 export interface Value {
-  value(): number;
+  value(): number | undefined;
 }

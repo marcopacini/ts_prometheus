@@ -31,6 +31,8 @@ test({
       registry: [new Registry()],
     });
 
+    assertEquals(summary.expose(), undefined);
+
     let count = 10;
     let sum = 0;
     let values = [];

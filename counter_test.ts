@@ -11,8 +11,8 @@ test({
     });
 
     assertEquals(counter1.description, "counter_without_labels");
-    assertEquals(counter1.expose(), "counter_without_labels 0");
-    assertEquals(counter1.value(), 0);
+    assertEquals(counter1.expose(), undefined);
+    assertEquals(counter1.value(), undefined);
 
     counter1.inc();
     assertEquals(counter1.expose(), "counter_without_labels 1");
@@ -35,8 +35,8 @@ test({
     });
 
     assertEquals(counter2.description, "counter_with_labels");
-    assertEquals(counter2.expose(), "counter_with_labels 0");
-    assertEquals(counter2.value(), 0);
+    assertEquals(counter2.expose(), undefined);
+    assertEquals(counter2.value(), undefined);
 
     assertThrows(() => {
       counter2.inc(-1);

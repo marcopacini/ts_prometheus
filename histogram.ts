@@ -49,7 +49,10 @@ export class Histogram extends Metric implements Observe {
     return `${this.collector.name}${labels}`;
   }
 
-  expose(): string {
+  expose(): string | undefined {
+    if (this.count == 0) {
+      return undefined;
+    }
     let text = "";
     for (let i = 0; i < this.buckets.length; i++) {
       let labels = this.getLabelsAsString({ le: `${this.buckets[i]}` });

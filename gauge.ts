@@ -4,7 +4,7 @@ import { Registry } from "./registry.ts";
 
 export class Gauge extends Metric implements Inc, Dec, Value {
   private collector: Collector;
-  private _value: number;
+  private _value?: number;
 
   static with(
     config: {
@@ -30,7 +30,7 @@ export class Gauge extends Metric implements Inc, Dec, Value {
   ) {
     super(labels, new Array(labels.length).fill(undefined));
     this.collector = collector;
-    this._value = 0;
+    this._value = undefined;
     this.collector.getOrSetMetric(this);
   }
 
@@ -39,8 +39,11 @@ export class Gauge extends Metric implements Inc, Dec, Value {
     return `${this.collector.name}${labels}`;
   }
 
-  expose(): string {
-    return `${this.description} ${this._value}`;
+  expose(): string | undefined {
+    if (this._value !== undefined) {
+      return `${this.description} ${this._value}`;
+    }
+    return undefined;
   }
 
   labels(labels: Labels): Inc & Dec & Set & Value {
@@ -71,13 +74,16 @@ export class Gauge extends Metric implements Inc, Dec, Value {
   }
 
   inc(n: number = 1) {
-    if (n < 0) {
-      throw new Error("it is not possible to deacrease a counter");
+    if (this._value === undefined) {
+      this._value = 0;
     }
     this._value += n;
   }
 
   dec(n: number = 1) {
+    if (this._value === undefined) {
+      this._value = 0;
+    }
     this._value -= n;
   }
 
@@ -85,7 +91,7 @@ export class Gauge extends Metric implements Inc, Dec, Value {
     this._value = n;
   }
 
-  value() {
+  value(): number | undefined {
     return this._value;
   }
 }

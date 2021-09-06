@@ -3,7 +3,7 @@ import { Inc, Labels, Metric, Value } from "./metric.ts";
 import { Registry } from "./registry.ts";
 export class Counter extends Metric implements Inc, Value {
   private collector: Collector;
-  private _value: number;
+  private _value?: number;
 
   static with(
     config: {
@@ -29,7 +29,7 @@ export class Counter extends Metric implements Inc, Value {
   ) {
     super(labels, new Array(labels.length).fill(undefined));
     this.collector = collector;
-    this._value = 0;
+    this._value = undefined;
     this.collector.getOrSetMetric(this);
   }
 
@@ -38,8 +38,11 @@ export class Counter extends Metric implements Inc, Value {
     return `${this.collector.name}${labels}`;
   }
 
-  expose(): string {
-    return `${this.description} ${this._value}`;
+  expose(): string | undefined {
+    if (this._value !== undefined) {
+      return `${this.description} ${this._value}`;
+    }
+    return undefined;
   }
 
   labels(labels: Labels): Inc & Value {
@@ -67,10 +70,13 @@ export class Counter extends Metric implements Inc, Value {
     if (n < 0) {
       throw new Error("it is not possible to deacrease a counter");
     }
+    if (this._value === undefined) {
+      this._value = 0;
+    }
     this._value += n;
   }
 
-  value(): number {
+  value(): number | undefined {
     return this._value;
   }
 }

@@ -18,7 +18,5 @@ test({
         buckets: [],
       });
     });
-
-    assertEquals;
   },
 });

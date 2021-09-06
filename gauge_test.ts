@@ -11,8 +11,8 @@ test({
     });
 
     assertEquals(gauge1.description, "gauge_without_labels");
-    assertEquals(gauge1.expose(), "gauge_without_labels 0");
-    assertEquals(gauge1.value(), 0);
+    assertEquals(gauge1.expose(), undefined);
+    assertEquals(gauge1.value(), undefined);
 
     gauge1.inc();
     assertEquals(gauge1.expose(), "gauge_without_labels 1");
@@ -43,12 +43,8 @@ test({
     });
 
     assertEquals(gauge2.description, "gauge_with_labels");
-    assertEquals(gauge2.expose(), "gauge_with_labels 0");
-    assertEquals(gauge2.value(), 0);
-
-    assertThrows(() => {
-      gauge2.inc(-1);
-    });
+    assertEquals(gauge2.expose(), undefined);
+    assertEquals(gauge2.value(), undefined);
 
     const gaugeLabel1 = gauge2.labels({ label1: "value1" });
 

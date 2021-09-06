@@ -30,13 +30,22 @@ export class Registry {
 
   metrics(): string {
     let text = "";
-    for (let [name, collector] of this.collectors) {
-      text += `# HELP ${collector.name} ${collector.help}\n`;
-      text += `# TYPE ${collector.name} ${collector.type}\n`;
+    for (let [_, collector] of this.collectors) {
+      let collectorText =
+        `# HELP ${collector.name} ${collector.help}\n# TYPE ${collector.name} ${collector.type}\n`;
+
+      let count = 0;
       for (let metric of collector.collect()) {
-        text += metric.expose() + "\n";
+        const metricText = metric.expose();
+        if (metricText !== undefined) {
+          collectorText += metricText + "\n";
+          count++;
+        }
       }
-      text += "\n";
+
+      if (count > 0) {
+        text += collectorText + "\n";
+      }
     }
     text = text.slice(0, -1); // remove last new line
     return text;
