@@ -106,3 +106,39 @@ test({
     assertEquals(summary.getSum(), values.reduce((s, v) => s + v, 0));
   },
 });
+
+const histogramTxt = `
+# HELP summary_baz_bytes a very nice summary
+# TYPE summary_baz_bytes summary
+summary_baz_bytes{A="B",C="D",quantile="0.01"} 2
+summary_baz_bytes{A="B",C="D",quantile="0.05"} 2
+summary_baz_bytes{A="B",C="D",quantile="0.9"} 105
+summary_baz_bytes{A="B",C="D",quantile="0.95"} 105
+summary_baz_bytes{A="B",C="D",quantile="0.99"} 105
+summary_baz_bytes_sum{A="B",C="D"} 250
+summary_baz_bytes_count{A="B",C="D"} 8
+`.trimStart();
+
+test({
+  name: "Histogram with labels outputs the correct format for prometheus",
+  fn() {
+    const summary = Summary.with({
+      name: "summary_baz_bytes",
+      help: "a very nice summary",
+      labels: ["A", "C"],
+    });
+
+    const labels = { A: "B", C: "D" };
+
+    summary.labels(labels).observe(2);
+    summary.labels(labels).observe(3);
+    summary.labels(labels).observe(4);
+    summary.labels(labels).observe(5);
+    summary.labels(labels).observe(23);
+    summary.labels(labels).observe(7);
+    summary.labels(labels).observe(101);
+    summary.labels(labels).observe(105);
+
+    assertEquals(Registry.default.metrics(), histogramTxt);
+  },
+});

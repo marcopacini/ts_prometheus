@@ -109,12 +109,10 @@ export class Summary extends Metric implements Observe {
     let text = "";
 
     this.clean();
-    const sorted = this.values.slice().sort((a, b) =>
-      a.getValue() - b.getValue()
-    );
+    const sorted = this.values.slice().sort((a, b) => a.getValue() - b.getValue());
 
     for (const p of this.percentiles) {
-      const labels = this.getLabelsAsString({ percentile: p.toString() });
+      const labels = this.getLabelsAsString({ quantile: p.toString() });
       let index = Math.ceil(p * sorted.length);
       index = index == 0 ? 0 : index - 1;
       const value = sorted[index].getValue();
