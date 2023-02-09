@@ -121,9 +121,10 @@ export class Summary extends Metric implements Observe {
       text += `${this.collector.name}${labels} ${value}\n`;
     }
 
+    const labels = this.getLabelsAsString();
     const sum = this.values.reduce((sum, v) => sum + v.getValue(), 0);
-    text += `${this.collector.name}_sum ${sum}\n`;
-    text += `${this.collector.name}_count ${sorted.length}`;
+    text += `${this.collector.name}_sum${labels} ${sum}\n`;
+    text += `${this.collector.name}_count${labels} ${sorted.length}`;
 
     return text;
   }

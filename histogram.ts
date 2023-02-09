@@ -59,8 +59,10 @@ export class Histogram extends Metric implements Observe {
       labels = labels.replace("Infinity", "+Inf");
       text += `${this.collector.name}_bucket${labels} ${this.values[i]}\n`;
     }
-    text += `${this.collector.name}_sum ${this.sum}\n`;
-    text += `${this.collector.name}_count ${this.count}`;
+
+    const labels = this.getLabelsAsString();
+    text += `${this.collector.name}_sum${labels} ${this.sum}\n`;
+    text += `${this.collector.name}_count${labels} ${this.count}`;
     return text;
   }
 
