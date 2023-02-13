@@ -22,7 +22,7 @@ const myCounter = Counter.with({
 ## Examples
 
 - [ts-prometheus](https://github.com/marcopacini/ts-prometheus/blob/master/example/example.ts)
-- [oak](https://github.com/marcopacini/ts-prometheus/blob/master/example/oak/main.ts)
+- [oak](https://github.com/marcopacini/ts-prometheus/blob/master/example/oak/example.ts)
 
 ## Metric Types
 
