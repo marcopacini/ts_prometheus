@@ -1,5 +1,4 @@
 import { assertEquals, assertThrows, test } from "./test_deps.ts";
-
 import { Registry } from "./registry.ts";
 import { Histogram } from "./histogram.ts";
 

@@ -46,7 +46,7 @@ histogram.observe(.58);
 const summary = Summary.with({
   name: "http_response_size",
   help: "A summary of the response size.",
-  percentiles: [.25, .5, .75, 1],
+  quantiles: [.25, .5, .75, 1],
 });
 
 const values = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];

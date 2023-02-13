@@ -22,7 +22,7 @@ class Sample {
 
 export class Summary extends Metric implements Observe {
   private collector: Collector;
-  private percentiles: number[];
+  private quantiles: number[];
   private values: Sample[];
   private maxAge?: number;
   private ageBuckets?: number;
@@ -32,7 +32,7 @@ export class Summary extends Metric implements Observe {
       name: string;
       help: string;
       labels?: string[];
-      percentiles?: number[];
+      quantiles?: number[];
       maxAge?: number;
       ageBuckets?: number;
       registry?: Registry[];
@@ -44,17 +44,14 @@ export class Summary extends Metric implements Observe {
       "summary",
       config.registry,
     );
+
     const labels = config.labels || [];
-    const percentiles = config.percentiles || [.01, .05, .9, .95, .99];
-    percentiles.forEach((v) => {
-      if (v < 0 || v > 1) {
-        throw new Error(`invalid percentile: ${v} not in [0,1]`);
-      }
-    });
+    const quantiles = config.quantiles || [.01, .05, .5, .95, .99];
+
     return new Summary(
       collector,
       labels,
-      percentiles,
+      quantiles,
       config.maxAge,
       config.ageBuckets,
     );
@@ -63,17 +60,23 @@ export class Summary extends Metric implements Observe {
   private constructor(
     collector: Collector,
     labels: string[],
-    percentiles: number[],
+    quantiles: number[],
     maxAge?: number,
     ageBuckets?: number,
   ) {
     super(labels, new Array(labels.length).fill(undefined));
     this.collector = collector;
-    this.percentiles = percentiles.sort((a, b) => a < b ? -1 : 1);
+    this.quantiles = quantiles.sort((a, b) => a < b ? -1 : 1);
     this.values = [];
     this.maxAge = maxAge;
     this.ageBuckets = ageBuckets;
     this.collector.getOrSetMetric(this);
+
+    quantiles.forEach((v) => {
+      if (v < 0 || v > 1) {
+        throw new Error(`invalid quantiles: ${v} not in [0,1]`);
+      }
+    });
   }
 
   get description(): string {
@@ -94,6 +97,7 @@ export class Summary extends Metric implements Observe {
       }
       this.values = this.values.slice(i);
     }
+
     // Remove extra values
     if (this.ageBuckets !== undefined) {
       const index = this.values.length - this.ageBuckets;
@@ -111,7 +115,7 @@ export class Summary extends Metric implements Observe {
     this.clean();
     const sorted = this.values.slice().sort((a, b) => a.getValue() - b.getValue());
 
-    for (const p of this.percentiles) {
+    for (const p of this.quantiles) {
       const labels = this.getLabelsAsString({ quantile: p.toString() });
       let index = Math.ceil(p * sorted.length);
       index = index == 0 ? 0 : index - 1;
@@ -128,7 +132,8 @@ export class Summary extends Metric implements Observe {
   }
 
   labels(labels: Labels): Observe {
-    let child = new Summary(this.collector, this.labelNames, this.percentiles);
+    let child = new Summary(this.collector, this.labelNames, this.quantiles);
+
     for (const key of Object.keys(labels)) {
       const index = child.labelNames.indexOf(key);
       if (index === -1) {
@@ -136,6 +141,7 @@ export class Summary extends Metric implements Observe {
       }
       child.labelValues[index] = labels[key];
     }
+
     child = child.collector.getOrSetMetric(child) as Summary;
 
     return {

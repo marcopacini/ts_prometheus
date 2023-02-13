@@ -105,13 +105,13 @@ http_requests_duration_count 2
 
 ### Summary
 
-By default percentiles when not set are `[ .01, .05, .9, .95, .99 ]`.
+By default quantiles when not set are `[ .01, .05, .5, .95, .99 ]`.
 
 ```ts
 let summary = Summary.with({
   name: "http_response_size",
   help: "A summary of the response size.",
-  percentiles: [.25, .5, .75, 1],
+  quantiles: [.25, .5, .75, 1],
 });
 
 let values = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
@@ -121,10 +121,10 @@ values.forEach((v) => summary.observe(v));
 ```
 # HELP http_response_size A summary of the response size.
 # TYPE http_response_size summary
-http_response_size{percentile="0.25"} 2
-http_response_size{percentile="0.5"} 5
-http_response_size{percentile="0.75"} 21
-http_response_size{percentile="1"} 55
+http_response_size{quantile="0.25"} 2
+http_response_size{quantile="0.5"} 5
+http_response_size{quantile="0.75"} 21
+http_response_size{quantile="1"} 55
 http_response_size_sum 143
 http_response_size_count 10
 ```
@@ -137,7 +137,7 @@ observations.
 Summary.with({
   name: "http_response_size",
   help: "A summary of the response size.",
-  percentiles: [ .25, .5, .75, 1 ]
+  quantiles: [ .25, .5, .75, 1 ]
   maxAge: 1000 // milliseconds
   ageBuckets: 5 // number of observations
 });

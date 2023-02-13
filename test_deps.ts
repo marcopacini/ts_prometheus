@@ -13,6 +13,8 @@ export {
   runBenchmarks,
 } from "https://deno.land/std@0.106.0/testing/bench.ts";
 
+export { delay } from "https://deno.land/std@0.106.0/async/delay.ts";
+
 export class MetricMock extends Metric {
   constructor(labelNames: string[] = [], labelValues: string[] = []) {
     super(labelNames, labelValues);

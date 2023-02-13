@@ -1,7 +1,4 @@
-import { assertEquals, assertThrows, test } from "./test_deps.ts";
-
-import { delay } from "https://deno.land/std/async/delay.ts";
-
+import { assertEquals, assertThrows, delay, test } from "./test_deps.ts";
 import { Summary } from "./summary.ts";
 import { Registry } from "./registry.ts";
 
@@ -9,7 +6,7 @@ test({
   name: "Summary.with",
   fn() {
     const summary = Summary.with({
-      name: "summary_withouts_labels_and_percentiles",
+      name: "summary_withouts_labels_and_quantiles",
       help: "help",
     });
 
@@ -17,7 +14,7 @@ test({
 
     assertThrows(() => {
       Summary.with({
-        name: "summary_withouts_labels_and_percentiles",
+        name: "summary_withouts_labels_and_quantiles",
         help: "help",
       });
     });
@@ -28,7 +25,7 @@ test({
   name: "Summary.observe",
   fn() {
     const summary = Summary.with({
-      name: "summary_withouts_labels_and_percentiles",
+      name: "summary_withouts_labels_and_quantiles",
       help: "help",
       registry: [new Registry()],
     });
@@ -55,7 +52,7 @@ test({
   name: "Summary.observe (maxAge)",
   async fn() {
     const summary = Summary.with({
-      name: "summary_withouts_labels_and_percentiles",
+      name: "summary_withouts_labels_and_quantiles",
       help: "help",
       maxAge: 3000, // ms
       registry: [new Registry()],
@@ -86,7 +83,7 @@ test({
   name: "Summary.observe (ageBuckets)",
   fn() {
     const summary = Summary.with({
-      name: "summary_withouts_labels_and_percentiles",
+      name: "summary_withouts_labels_and_quantiles",
       help: "help",
       ageBuckets: 3,
       registry: [new Registry()],
@@ -112,7 +109,7 @@ const histogramTxt = `
 # TYPE summary_baz_bytes summary
 summary_baz_bytes{A="B",C="D",quantile="0.01"} 2
 summary_baz_bytes{A="B",C="D",quantile="0.05"} 2
-summary_baz_bytes{A="B",C="D",quantile="0.9"} 105
+summary_baz_bytes{A="B",C="D",quantile="0.5"} 5
 summary_baz_bytes{A="B",C="D",quantile="0.95"} 105
 summary_baz_bytes{A="B",C="D",quantile="0.99"} 105
 summary_baz_bytes_sum{A="B",C="D"} 250
