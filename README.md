@@ -137,8 +137,8 @@ observations.
 Summary.with({
   name: "http_response_size",
   help: "A summary of the response size.",
-  quantiles: [ .25, .5, .75, 1 ]
-  maxAge: 1000 // milliseconds
-  ageBuckets: 5 // number of observations
+  quantiles: [.25, .5, .75, 1],
+  maxAge: 1000, // milliseconds
+  ageBuckets: 5, // number of observations
 });
 ```
