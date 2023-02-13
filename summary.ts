@@ -113,7 +113,9 @@ export class Summary extends Metric implements Observe {
     let text = "";
 
     this.clean();
-    const sorted = this.values.slice().sort((a, b) => a.getValue() - b.getValue());
+    const sorted = this.values.slice().sort((a, b) =>
+      a.getValue() - b.getValue()
+    );
 
     for (const p of this.quantiles) {
       const labels = this.getLabelsAsString({ quantile: p.toString() });
