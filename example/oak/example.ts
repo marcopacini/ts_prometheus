@@ -28,7 +28,7 @@ app.use(async (ctx, next) => {
   counter.labels({
     path: ctx.request.url.pathname,
     method: ctx.request.method,
-    status: ctx.response.status || "",
+    status: String(ctx.response.status || 200),
   }).inc();
 });
 

@@ -24,9 +24,11 @@ export class Histogram extends Metric implements Observe {
       "histogram",
       config.registry,
     );
+
     const labels = config.labels || [];
     const buckets = config.buckets || [];
     buckets.push(Infinity);
+
     return new Histogram(collector, labels, buckets);
   }
 
@@ -53,19 +55,24 @@ export class Histogram extends Metric implements Observe {
     if (this.count == 0) {
       return undefined;
     }
+
     let text = "";
+
     for (let i = 0; i < this.buckets.length; i++) {
       let labels = this.getLabelsAsString({ le: `${this.buckets[i]}` });
       labels = labels.replace("Infinity", "+Inf");
       text += `${this.collector.name}_bucket${labels} ${this.values[i]}\n`;
     }
-    text += `${this.collector.name}_sum ${this.sum}\n`;
-    text += `${this.collector.name}_count ${this.count}`;
+
+    const labels = this.getLabelsAsString();
+    text += `${this.collector.name}_sum${labels} ${this.sum}\n`;
+    text += `${this.collector.name}_count${labels} ${this.count}`;
     return text;
   }
 
   labels(labels: Labels): Observe {
     let child = new Histogram(this.collector, this.labelNames, this.buckets);
+
     for (const key of Object.keys(labels)) {
       const index = child.labelNames.indexOf(key);
       if (index === -1) {
@@ -73,6 +80,7 @@ export class Histogram extends Metric implements Observe {
       }
       child.labelValues[index] = labels[key];
     }
+
     child = child.collector.getOrSetMetric(child) as Histogram;
 
     return {
@@ -84,9 +92,11 @@ export class Histogram extends Metric implements Observe {
 
   observe(n: number) {
     const index = this.buckets.findIndex((v) => v >= n);
+
     for (let i = index; i < this.values.length; i++) {
       this.values[i] += 1;
     }
+
     this.sum += n;
     this.count += 1;
   }
